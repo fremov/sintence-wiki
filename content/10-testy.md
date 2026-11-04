@@ -49,7 +49,7 @@ TEST_CASE("ModeOfQueue: ARAM, MAYHEM, остальное CLASSIC") {
 | `app/` (окна) | не тестируется — потому логику выносят в `core/` |
 
 Фикстуры: `tests/data/allgamedata_practice.json` — **настоящий** ответ Live Client из
-Practice Tool. Путь в тестах — макрос `SINTENCE_TEST_DATA_DIR`.
+Practice Tool; рядом `allgamedata_practice_towers.json` (с объектами карты). Путь в тестах — макрос `SINTENCE_TEST_DATA_DIR`.
 
 ## Порядок работы (TDD в малом)
 

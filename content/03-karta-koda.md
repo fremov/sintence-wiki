@@ -44,6 +44,9 @@ flowchart BT
 Проверка на глаз: открой файл из `core/` — нет ни одного `#include <httplib.h>`,
 `json.hpp`, `<windows.h>`. Увидел — это нарушение.
 
+Нюансы границы: `nlohmann` виден в заголовках `data/` (через `json_helpers.h` он есть
+в `live_client_json.h`), а `httplib` допустим **только в `.cpp`** слоёв `data/` и `app/`.
+
 ## Что где лежит (по задачам)
 
 ### core/ — доменные типы
@@ -51,7 +54,8 @@ flowchart BT
 |---|---|
 | `live_game.h` | `LiveGame`, `LivePlayer`, `LiveActivePlayer`, интерфейс `LiveGameSource` |
 | `lobby.h`, `spectated_game.h` | состав до матча (выбор чемпиона, экран загрузки) |
-| `match_history.h`, `match_detail.h`, `match_store.h` | завершённые матчи, интерфейс хранилища |
+| `match_history.h`, `match_detail.*`, `match_store.h` | завершённые матчи, интерфейс хранилища |
+| `ladder_rank.h` | ранг на лестнице |
 | `player_profile.h` | ранг, мастерство |
 | `game_mode.*` | режим игры по очереди/Live Client (ARAM, Хаос, обычный) |
 | `hotkey.*` | валидные сочетания клавиш оверлея |
@@ -64,10 +68,10 @@ flowchart BT
 | Игра | `live_client_source`, `live_client_json`, `cached_live_game_source`, `live_game_service` |
 | Клиент League (LCU) | `lcu_client`, `lcu_json`, `lobby_service`, `lcu_actions` (запись рун/заклинаний) |
 | Сервер Sintence | `server_client`, `server_auth`, `credential_store`, `app_heartbeat`, `pack_store`, `meta_store`, `trends_store`, `badge_store`, `active_users`, `app_update` |
-| Riot через шлюз | `riot_api_client`, `riot_api_json`, `profile_service`, `rank_service`, `history_service` |
+| Riot через шлюз | `riot_api_client`, `riot_api_json`, `profile_service`, `rank_service`, `history_service`, `match_detail_json`, `timeline_json`, `recent_json`, `ladder_friends` |
 | Хранилище | `sqlite_match_store`, `history_schema.sql` |
 | Разбор пака | `preference_pack` (самый большой разбор) |
-| Прочее | `app_log` (журнал), `json_helpers`, `autostart`, `discord_*` |
+| Прочее | `app_log` (журнал), `json_helpers`, `autostart`, `discord_*`, `counters`, `hidden_log` |
 
 Пара-закономерность: у многих адаптеров есть пара `*_source/_client` (ходит за
 данными) и `*_json` (превращает JSON в типы `core/`). Разбор отделён от сети,
@@ -83,12 +87,14 @@ flowchart BT
 | `main.cpp` | **только сборка частей вместе**, без логики |
 | `live_api_server.*` | локальный HTTP API (2400 строк — самый большой файл) |
 | `overlay_window.*` | окно оверлея поверх игры, хуки клавиатуры |
-| `profile_window.*`, `stats_window.*` | окно статистики |
+| `profile_window.*` | окно профиля и истории (`#/profile`) |
+| `stats_window.*` | необязательное окно статистики в матче (`#/stats`) |
 | `tray_icon.*` | значок в трее |
 | `app_updater.*` | самообновление |
 | `webview_lockdown.*` | отключение «браузерности» WebView2 |
 | `ui_text.*` | тексты трея и уведомлений (ru/en) |
-| `embedded_app.h` | интерфейс доступ к вшитому интерфейсу |
+| `embedded_app.h` | доступ к интерфейсу, вшитому в exe |
+| `resource.h`, `sintence.rc`, `.manifest`, `.ico`, `app_version.h.in` | ресурсы exe: иконка, версия, манифест |
 
 ## Куда класть новый код — чек-лист
 
@@ -108,8 +114,8 @@ flowchart BT
 
 - Пространство имён `sintence`, детали — в анонимном `namespace { }` в `.cpp`.
 - Охранники заголовков `SINTENCE_<СЛОЙ>_<ИМЯ>_H`.
-- Комментарии — **по-русски и «зачем», а не «что»**. Каждый заголовок открывается
-  комментарием `// слой/файл — что это и почему так`. Читай их, они подробные.
+- Комментарии — **по-русски и «зачем», а не «что»**. В начале заголовка (после охранника и `#include`) — комментарий
+  `// слой/файл — что это и почему так`. Читай их, они подробные.
 - Журнал — `Log`/`LogError`. Исключений наружу у источников данных нет:
   «нет матча» — это `std::nullopt`, а не ошибка.
 - Имена: типы `PascalCase`, функции `PascalCase`, поля `snake_case`,

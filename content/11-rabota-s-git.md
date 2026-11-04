@@ -53,7 +53,8 @@ git merge origin/main        # или git rebase origin/main, если осво�
 
 ## Push
 
-- `learning` пушится в `origin/learning`: `git push -u origin learning`.
+- `learning` пушится в `origin/learning`: `git push -u origin learning`. На GitHub ветки
+  пока нет — первый push создаст её.
 - **Не пушь в `main`** приложения и не открывай PR без договорённости с заказчиком.
 - В `sintence-data` и `sintence-web` свои правила: push в `sintence-data` — боевая
   выкладка. Туда без согласования не лезь.

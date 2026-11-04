@@ -15,16 +15,18 @@ WebView2 — встроенный Chromium Windows 11. Пользователь 
 пишется на моках без C++, а C++ не изучает COM-API WebView2. Цена — открытый
 локальный порт (закрыт от сети, см. страницу 5).
 
-Два окна, **одна и та же страница `dist/`**, разные маршруты:
+Три окна, **одна и та же страница `dist/`**, разные маршруты (`sintence-web/src/main.ts`):
 - оверлей — маршрут по умолчанию (`App.vue`);
-- окно статистики — `#/profile`.
+- окно профиля — `#/profile` (история матчей, `profile/`);
+- окно статистики в матче — `#/stats` (`stats/StatsApp.vue`, необязательное).
 
 ## Окна (`src/app/`)
 
 | Файл | Что |
 |---|---|
 | `overlay_window.cpp` (1850 строк) | окно поверх игры; WinAPI: `CreateWindowEx`, хуки, `WM_*` сообщения; WebView2 внутри |
-| `profile_window.cpp`, `stats_window.cpp` | окно статистики |
+| `profile_window.cpp` | окно профиля и истории |
+| `stats_window.cpp` | окно статистики в матче |
 | `tray_icon.cpp` | значок в трее и меню |
 | `webview_lockdown.cpp` | выключает DevTools, F5, Ctrl+F/P/S, масштаб, контекстное меню, новые окна |
 
@@ -56,15 +58,19 @@ Vue 3 + Vite + TypeScript + zod.
 
 ```
 sintence-web/src/
+├─ main.ts       выбор окна по маршруту (#/profile, #/stats, иначе оверлей)
+├─ App.vue       оверлей
 ├─ api/          client.ts, schemas.ts (zod-схемы всех ответов)
 ├─ composables/  useHealth.ts и другие «хуки» опроса
 ├─ components/   табло, карточки, советы
-├─ overlay/      поведение окна оверлея
-├─ profile/      окно статистики
-├─ settings/     настройки, горячие клавиши
-├─ data/         Data Dragon (иконки, названия), бейджи
+├─ overlay/      поведение окна оверлея (bounds, scale, host)
+├─ profile/      окно профиля, панель настроек SettingsPanel.vue
+├─ stats/        окно статистики в матче (StatsApp.vue, compare.ts)
+├─ settings/     discord.ts, hotkeys.ts, statsWindow.ts
+├─ data/         Data Dragon, бейджи, itemBuild, objectives, modeAdvice, changelog…
 ├─ i18n/         ru / en
 ├─ mock/         данные для dev:mock
+├─ types.ts, tooltip.ts, styles.css
 └─ lockdown.ts   гашение «браузерных» действий
 ```
 
