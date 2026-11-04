@@ -17,25 +17,19 @@ Sintence — приложение для Windows к League of Legends (реги�
 
 ## Из каких частей состоит система
 
-```
-                       ┌───────────────────────────────────────────┐
- League of Legends     │              sintence.exe (C++)           │
- ┌───────────────┐     │                                           │
- │ Live Client   │◄────┤ data/live_client_source   ┐               │
- │ 127.0.0.1:2999│     │                           │   app/        │
- ├───────────────┤     │ data/lcu_client           ├─► live_api_   │      ┌───────────────┐
- │ LCU клиента   │◄───►┤ data/lobby_service        │   server      │◄────►│ окна WebView2 │
- │ (lockfile)    │     │                           │ 127.0.0.1:8777│ HTTP │ (Vue-страница)│
- └───────────────┘     │ data/server_client ───────┘               │      └───────────────┘
-                       └─────────┬─────────────────────────────────┘
-                                 │ HTTPS + токен пользователя
-                                 ▼
-                       ┌───────────────────┐        ┌──────────────┐
-                       │ сервер Sintence   │◄──────►│  Riot API    │
-                       │ (sintence-data)   │        │ (ключ тут)   │
-                       │ шлюз, кеш, пак,   │        └──────────────┘
-                       │ база матчей       │
-                       └───────────────────┘
+```mermaid
+flowchart LR
+  subgraph PC["Компьютер игрока"]
+    LC["Live Client<br/>127.0.0.1:2999"]
+    LCU["LCU клиента League<br/>(lockfile)"]
+    APP["sintence.exe (C++)"]
+    UI["Окна WebView2<br/>Vue-страница"]
+    LC --> APP
+    LCU <--> APP
+    APP <-->|"HTTP 127.0.0.1:8777"| UI
+  end
+  APP <-->|"HTTPS + токен пользователя"| SRV["Сервер Sintence<br/>шлюз, кеш, пак, база"]
+  SRV <--> RIOT["Riot API<br/>(ключ только тут)"]
 ```
 
 Одной фразой: **C++ собирает данные из трёх мест (игра, клиент, сервер),

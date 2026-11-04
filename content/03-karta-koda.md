@@ -18,12 +18,14 @@ sintence-app/
 
 ## Слои и правило зависимостей
 
-```
-          app
-         /   \
-   analysis   data
-         \   /
-          core
+```mermaid
+flowchart BT
+  core["core — домен"]
+  data["data — адаптеры"] --> core
+  analysis["analysis — метрики"] --> core
+  app["app — окна, API, main"] --> data
+  app --> analysis
+  app --> core
 ```
 
 Стрелка «знает о»: `app` знает всех, `analysis` и `data` знают только `core`,
