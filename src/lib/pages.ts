@@ -15,8 +15,12 @@ export interface WikiPage {
 
 function groupOf(num: number): string {
   if (num <= 4) return 'Старт'
-  if (num <= 8) return 'Подсистемы'
+  if (num <= 8) return 'Обзор подсистем'
   if (num <= 12) return 'Практика'
+  if (num <= 19) return 'Данные и контракты'
+  if (num <= 26) return 'Приложение изнутри'
+  if (num <= 29) return 'Интерфейс, сервер, сборка'
+  if (num <= 33) return 'Инструменты разработчика'
   return 'Справочник'
 }
 

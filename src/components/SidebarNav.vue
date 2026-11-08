@@ -13,7 +13,7 @@ import { groups } from '../lib/pages'
             class="flex items-center gap-2 rounded-md px-2 py-1.5 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/70"
             active-class="!bg-indigo-50 !text-indigo-700 font-medium dark:!bg-indigo-950/60 dark:!text-indigo-300"
           >
-            <span class="w-5 shrink-0 text-right font-mono text-xs text-slate-400">{{ p.num === 99 ? '—' : p.num }}</span>
+            <span class="w-6 shrink-0 text-right font-mono text-xs text-slate-400">{{ p.num === 99 ? '—' : p.num }}</span>
             {{ p.title }}
           </RouterLink>
         </li>

@@ -121,7 +121,8 @@
 `apiVersion`, `appVersion`, `profiles`, `preferences`, `history`, `badges`, `game`
 (идёт ли матч), `averages`, `pack` (`{patch, region}` или `null`), `modes`,
 `update` (`{state, latest, message, checkedAt}`), `account` (`{state, userId}` — токен
-сюда не попадает). Единственный ответ с `Access-Control-Allow-Origin: *`.
+сюда не попадает). Заголовок `Access-Control-Allow-Origin: *` ставит не только он, а многие GET-обработчики
+(`/api/live`, `/api/lobby`, `/api/profiles`, `/api/meta`, `/api/trends`, `/api/ladder*`, `/api/skins`, `/api/badges`…).
 
 ## Версии контракта
 
